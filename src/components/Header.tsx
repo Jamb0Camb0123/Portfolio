@@ -6,10 +6,10 @@ const Header: React.FC = () => {
     <header>
       <nav>
         <ul>
-          <li><Link to="/portfolio/home">Home</Link></li>
-          <li><Link to="/portfolio/about">About</Link></li>
-          <li><Link to="/portfolio/projects">Projects</Link></li>
-          <li><Link to="/portfolio/contact">Contact</Link></li>
+          <li><Link to="/home">Home</Link></li>
+          <li><Link to="/about">About</Link></li>
+          <li><Link to="/projects">Projects</Link></li>
+          <li><Link to="/contact">Contact</Link></li>
         </ul>
       </nav>
     </header>
