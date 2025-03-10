@@ -1,13 +1,20 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaGithub } from "react-icons/fa";
+import { FaLinkedin, FaGithub } from "react-icons/fa";
+import LeetCodeIcon from "../assets/leetcode-icon";
 
 // Navigation links configuration
 const links = [
   { to: "/home", label: "Home" },
   { to: "/about", label: "About" },
   { to: "/projects", label: "Projects" },
-  { to: "/contact", label: "Contact" },
+  { to: "/contact", label: "Contact" }
+];
+
+// Footer links configuration (Privacy Policy, Terms of Service)
+const footerLinks = [
+  { to: "/privacy-policy", label: "Privacy Policy" },
+  { to: "/terms-of-service", label: "Terms of Service" }
 ];
 
 // Custom hook for managing active link
@@ -95,15 +102,15 @@ const Footer: React.FC = () => {
       {/* Main Footer Content */}
       <div className="flex flex-col lg:flex-row items-center lg:justify-between px-6 lg:px-10 py-4 space-y-4 lg:space-y-0">
         {/* Left Section (Image Placeholder) */}
-        <div className="lg:w-1/3 flex justify-center lg:justify-start">
+        <div className="lg:w-1/5 flex justify-center lg:justify-start">
           <img src="your-image-path.jpg" alt="Logo" className="h-12 w-auto" />
         </div>
 
         {/* Center Section (Navigation Links) */}
-        <nav className="lg:w-1/3 w-full flex justify-center items-center">
-          <ul className="flex space-x-10 relative" onMouseLeave={() => setHoveredLink(null)}>
+        <nav className="lg:w-3/5 w-full flex justify-evenly items-center">
+          <ul className="flex space-x-10 relative w-full justify-evenly" onMouseLeave={() => setHoveredLink(null)}>
             {links.map((link, index) => (
-              <li key={link.to}>
+              <li key={link.to} className="m-0">
                 <NavLink
                   to={link.to}
                   ref={(el) => {
@@ -124,25 +131,32 @@ const Footer: React.FC = () => {
           </ul>
         </nav>
 
+
+
         {/* Right Section (Social Media Icons) */}
-        <div className="lg:w-1/3 flex justify-center lg:justify-end space-x-5 text-xl">
-          <a href="#" className="text-white hover:text-green-400"><FaFacebook /></a>
-          <a href="#" className="text-white hover:text-green-400"><FaTwitter /></a>
-          <a href="#" className="text-white hover:text-green-400"><FaInstagram /></a>
-          <a href="#" className="text-white hover:text-green-400"><FaLinkedin /></a>
-          <a href="#" className="text-white hover:text-green-400"><FaGithub /></a>
+        <div className="lg:w-1/5 flex justify-center lg:justify-end space-x-5 text-xl">
+          <a href="https://www.linkedin.com/in/jamie-b-campbell/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-green-400 w-6 h-6"><FaLinkedin /></a>
+          <a href="https://github.com/Jamb0Camb0123" target="_blank" rel="noopener noreferrer" className="text-white hover:text-green-400 w-6 h-6"><FaGithub /></a>
+          <a href="https://leetcode.com/u/JamboCambo123/" target="_blank" rel="noopener noreferrer" className="fill-white hover:fill-green-400 w-5 h-5"><LeetCodeIcon /></a>
         </div>
       </div>
 
       {/* Bottom Section with Divider */}
       <div className="border-t border-gray-600 text-sm text-gray-400 py-2 flex flex-col lg:flex-row justify-between items-center px-6 lg:px-10 space-y-2 lg:space-y-0">
         {/* Left (Copyright) */}
-        <div>© {new Date().getFullYear()} Jamie Campbell Portfolio Site. All Rights Reserved.</div>
+        <div>© {new Date().getFullYear()} Jamie Campbell Portfolio Site. </div>
 
         {/* Right (Links) */}
         <div className="flex space-x-4">
-          <a href="#" className="hover:text-white">Privacy Policy</a>
-          <a href="#" className="hover:text-white">Terms of Service</a>
+          {footerLinks.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              className={`text-white hover:text-green-400`}
+            >
+              {link.label}
+            </NavLink>
+          ))}
         </div>
       </div>
     </footer>
