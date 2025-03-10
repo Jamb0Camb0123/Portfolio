@@ -7,6 +7,8 @@ import Projects from "./pages/Projects";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 
 // Route titles mapping
 const routeTitles: { [key: string]: string } = {
@@ -14,6 +16,8 @@ const routeTitles: { [key: string]: string } = {
   "/about": "About",
   "/projects": "Projects",
   "/contact": "Contact",
+  "/privacy-policy": "Privacy Policy",
+  "/terms-of-service": "Terms of Service"
 };
 
 // Hook to update the page title dynamically
@@ -51,6 +55,8 @@ function MainContent() {
         <Route path="/about" element={<About />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/privacy-policy" element={<Privacy />} />
+        <Route path="/terms-of-service" element={<Terms />} />
         <Route path="*" element={<NotFound />} /> {/* 404 Page */}
       </Routes>
 
