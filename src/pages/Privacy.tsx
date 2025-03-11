@@ -1,12 +1,11 @@
 import React from 'react';
+import Base64Viewer from '../components/Base64Viewer';
 
 const Privacy: React.FC = () => {
   return (
-    <div>
-      <h1>Welcome to My Portfolio</h1>
-      <p>This is the home page of my portfolio. Here you can find information about me, my projects, and how to contact me.</p>
-    </div>
+    <Base64Viewer filePath="public\Privacy Policy.txt" />
   );
 };
 
 export default Privacy;
+
