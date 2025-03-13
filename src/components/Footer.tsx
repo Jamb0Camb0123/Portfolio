@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { FaLinkedin, FaGithub } from "react-icons/fa";
 import LeetCodeIcon from "../assets/leetcode-icon";
+import logo from "../assets/favicon-transparent.png";
 
 // Navigation links configuration
 const links = [
@@ -19,17 +20,17 @@ const footerLinks = [
 
 // Custom hook for managing active link
 const useActiveLink = () => {
-  const location = useLocation(); // Using React Router's `useLocation` hook
-  const [activeLink, setActiveLink] = useState(location.pathname); // Set initial active link to current path
+  const location = useLocation();
+  const [activeLink, setActiveLink] = useState(location.pathname);
 
   useEffect(() => {
-    setActiveLink(location.pathname); // Update active link on location change
+    setActiveLink(location.pathname);
   }, [location]);
 
   return { activeLink, setActiveLink };
 };
 
-// Custom hook to track the position of the underline for active/hovered link
+// Custom hook to track underline position
 const useUnderlinePosition = (
   activeLink: string,
   hoveredLink: string | null,
@@ -37,77 +38,78 @@ const useUnderlinePosition = (
 ) => {
   const [position, setPosition] = useState({ left: 0, width: 0 });
 
-  // Function to update the underline position
   const updateUnderline = useCallback(() => {
     const targetLink = hoveredLink || activeLink;
-    const linkIndex = links.findIndex((l) => l.to === targetLink); // Find the index of the active/hovered link
-    const linkElement = linkRefs.current[linkIndex]; // Get the corresponding DOM element
+    const linkIndex = links.findIndex((l) => l.to === targetLink);
+    const linkElement = linkRefs.current[linkIndex];
 
     if (linkElement) {
-      setPosition({ left: linkElement.offsetLeft, width: linkElement.offsetWidth }); // Set the position and width of the underline
+      setPosition({ left: linkElement.offsetLeft, width: linkElement.offsetWidth });
     }
   }, [hoveredLink, activeLink]);
 
-  // Effect to update the underline on initial render and when resizing the window
   useEffect(() => {
     updateUnderline();
     window.addEventListener("resize", updateUnderline);
 
-    return () => window.removeEventListener("resize", updateUnderline); // Clean up the event listener
+    return () => window.removeEventListener("resize", updateUnderline);
   }, [updateUnderline]);
 
-  return position; // Return the position of the underline
+  return position;
 };
 
-// Custom hook for managing footer visibility based on scroll position
+// Custom hook for footer visibility (only show at bottom & update on route change)
 const useFooterVisibility = () => {
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
+  const location = useLocation(); // Detects route changes
 
-  // Function to determine footer visibility
+  const updateVisibility = () => {
+    const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
+    setVisible(scrollTop + clientHeight >= scrollHeight - 10);
+  };
+
   useEffect(() => {
-    const updateVisibility = () => {
-      const { scrollHeight, clientHeight } = document.documentElement;
-      setVisible(scrollHeight <= clientHeight || window.scrollY + window.innerHeight >= scrollHeight - 10); // Show footer when close to bottom
-    };
-
+    updateVisibility(); // Run on mount & route change
     window.addEventListener("scroll", updateVisibility);
     window.addEventListener("resize", updateVisibility);
-    updateVisibility(); // Initial check for visibility
 
     return () => {
       window.removeEventListener("scroll", updateVisibility);
       window.removeEventListener("resize", updateVisibility);
     };
-  }, []);
+  }, [location]); // Runs whenever the route changes
 
-  return visible; // Return visibility state
+  return visible;
 };
 
 // Footer Component
 const Footer: React.FC = () => {
-  const { activeLink, setActiveLink } = useActiveLink(); // Manage active link state
-  const [hoveredLink, setHoveredLink] = useState<string | null>(null); // Manage hovered link state
-  const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]); // Refs for tracking the links
+  const { activeLink, setActiveLink } = useActiveLink();
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+  const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
 
-  // Get the underline position for the active/hovered link
   const { left, width } = useUnderlinePosition(activeLink, hoveredLink, linkRefs);
-  const visible = useFooterVisibility(); // Determine if footer should be visible
+  const visible = useFooterVisibility();
 
   return (
     <footer
-      className={`fixed bottom-0 left-0 w-full bg-gray-900 text-white shadow-lg transition-opacity duration-500 ${
+      className={`text-white shadow-lg transition-opacity duration-500 fixed bottom-0 left-0 w-full ${
         visible ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
+      style={{
+        background: "#1E1E1E"
+      }}
     >
+
       {/* Main Footer Content */}
-      <div className="flex flex-col lg:flex-row items-center lg:justify-between px-6 lg:px-10 py-4 space-y-4 lg:space-y-0">
-        {/* Left Section (Image Placeholder) */}
-        <div className="lg:w-1/5 flex justify-center lg:justify-start">
-          <img src="your-image-path.jpg" alt="Logo" className="h-12 w-auto" />
+      <div className="flex flex-col md:flex-row items-center md:justify-between px-6 md:px-10 py-4 space-y-6 md:space-y-0">
+        {/* Left Section (Hidden on small screens) */}
+        <div className="hidden md:flex md:w-1/5 justify-center md:justify-start">
+          <img src={logo} alt="Logo" className="h-12 w-auto" />
         </div>
 
         {/* Center Section (Navigation Links) */}
-        <nav className="lg:w-3/5 w-full flex justify-evenly items-center">
+        <nav className="md:w-3/5 w-full flex justify-evenly items-center">
           <ul className="flex space-x-10 relative w-full justify-evenly" onMouseLeave={() => setHoveredLink(null)}>
             {links.map((link, index) => (
               <li key={link.to} className="m-0">
@@ -116,35 +118,33 @@ const Footer: React.FC = () => {
                   ref={(el) => {
                     linkRefs.current[index] = el;
                   }}
-                  className={`pb-1 transition-all duration-300 ${
-                    link.to === activeLink ? "text-green-400" : "text-white"
+                  className={`pb-1 text-lg transition-all duration-300 ${
+                    link.to === activeLink ? "text-[#00FF00]" : "text-white"
                   }`}
-                  onMouseEnter={() => setHoveredLink(link.to)} // Set hovered link when mouse enters
-                  onClick={() => setActiveLink(link.to)} // Update active link when clicked
+                  onMouseEnter={() => setHoveredLink(link.to)}
+                  onClick={() => setActiveLink(link.to)}
                 >
                   {link.label}
                 </NavLink>
               </li>
             ))}
             {/* Moving underline */}
-            <span className="absolute bottom-0 bg-green-400 h-[2px] transition-all duration-300" style={{ left, width }} />
+            <span className="absolute bottom-0 bg-[#00FF00] h-[2px] transition-all duration-300" style={{ left, width }} />
           </ul>
         </nav>
 
-
-
         {/* Right Section (Social Media Icons) */}
-        <div className="lg:w-1/5 flex justify-center lg:justify-end space-x-5 text-xl">
-          <a href="https://www.linkedin.com/in/jamie-b-campbell/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-green-400 w-6 h-6"><FaLinkedin /></a>
-          <a href="https://github.com/Jamb0Camb0123" target="_blank" rel="noopener noreferrer" className="text-white hover:text-green-400 w-6 h-6"><FaGithub /></a>
-          <a href="https://leetcode.com/u/JamboCambo123/" target="_blank" rel="noopener noreferrer" className="fill-white hover:fill-green-400 w-5 h-5"><LeetCodeIcon /></a>
+        <div className="md:w-1/5 flex justify-center md:justify-end space-x-5 text-xl mt-4 md:mt-0">
+          <a href="https://www.linkedin.com/in/jamie-b-campbell/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#00FF00] w-6 h-6"><FaLinkedin /></a>
+          <a href="https://github.com/Jamb0Camb0123" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#00FF00] w-6 h-6"><FaGithub /></a>
+          <a href="https://leetcode.com/u/JamboCambo123/" target="_blank" rel="noopener noreferrer" className="fill-white hover:fill-[#00FF00] w-5 h-5"><LeetCodeIcon /></a>
         </div>
       </div>
 
       {/* Bottom Section with Divider */}
-      <div className="border-t border-gray-600 text-sm text-gray-400 py-2 flex flex-col lg:flex-row justify-between items-center px-6 lg:px-10 space-y-2 lg:space-y-0">
+      <div className="border-t border-gray-600 text-sm py-2 flex flex-col md:flex-row justify-between items-center px-6 md:px-10 space-y-4 md:space-y-0">
         {/* Left (Copyright) */}
-        <div>© {new Date().getFullYear()} Jamie Campbell Portfolio Site. </div>
+        <div>© {new Date().getFullYear()} Jamie Campbell Portfolio Site.</div>
 
         {/* Right (Links) */}
         <div className="flex space-x-4">
@@ -152,7 +152,7 @@ const Footer: React.FC = () => {
             <NavLink
               key={link.to}
               to={link.to}
-              className={`text-white hover:text-green-400`}
+              className={`text-white hover:text-[#00FF00]`}
             >
               {link.label}
             </NavLink>

@@ -40,7 +40,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-gray-900 text-white shadow-lg font-Consolas">
+    <header className="bg-[#1E1E1E] text-white shadow-lg font-Consolas">
       <nav className="ml-10 mr-10 px-4 py-4">
         <ul
           ref={navRef}
