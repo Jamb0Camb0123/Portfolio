@@ -1,11 +1,8 @@
 import React from 'react';
-import Base64Viewer from '../components/Base64Viewer';
+import HTMLViewer from '../components/HTMLViewer';
 
 const Privacy: React.FC = () => {
-  return (
-    <Base64Viewer filePath="public\Privacy Policy.txt" />
-  );
+  return <HTMLViewer filePath={`${process.env.PUBLIC_URL}/PrivacyPolicy.html`} />;
 };
 
 export default Privacy;
-
