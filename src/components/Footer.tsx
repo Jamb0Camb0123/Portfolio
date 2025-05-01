@@ -4,6 +4,7 @@ import { FaLinkedin, FaGithub } from "react-icons/fa";
 import LeetCodeIcon from "../assets/leetcode-icon";
 import logo from "../assets/favicon-transparent.png";
 
+// Navigation links shown in the main footer nav bar
 const links = [
   { to: "/home", label: "Home" },
   { to: "/about", label: "About" },
@@ -11,11 +12,13 @@ const links = [
   { to: "/contact", label: "Contact" },
 ];
 
+// Footer links shown at the very bottom of the footer
 const footerLinks = [
   { to: "/privacy-policy", label: "Privacy Policy" },
   { to: "/terms-of-service", label: "Terms of Service" },
 ];
 
+/** Tracks the current route and returns it as `activeLink` */
 const useActiveLink = () => {
   const location = useLocation();
   const [activeLink, setActiveLink] = useState(location.pathname);
@@ -27,6 +30,10 @@ const useActiveLink = () => {
   return { activeLink, setActiveLink };
 };
 
+/**
+ * Computes the underline position for the active or hovered link
+ * and hides it for footer links unless hovered
+ */
 const useUnderlinePosition = (
   activeLink: string,
   hoveredLink: string | null,
@@ -38,16 +45,18 @@ const useUnderlinePosition = (
   const updateUnderline = useCallback(() => {
     const isFooterLink = ["/privacy-policy", "/terms-of-service"].includes(activeLink);
     
+    // Hide underline for footer links unless hovered
     if (isFooterLink && !hoveredLink) {
       setHidden(true);
       return;
     }
-    
+
     setHidden(false);
     const targetLink = hoveredLink || activeLink;
     const linkIndex = links.findIndex((l) => l.to === targetLink);
     const linkElement = linkRefs.current?.[linkIndex];
 
+    // Update underline position
     if (linkElement) {
       setPosition({ left: linkElement.offsetLeft, width: linkElement.offsetWidth });
     }
@@ -62,6 +71,10 @@ const useUnderlinePosition = (
   return { position, hidden };
 };
 
+/**
+ * Controls whether the footer is visible based on scroll position,
+ * and disables animation delay on mobile
+ */
 const useFooterControl = () => {
   const [visible, setVisible] = useState(false);
   const footerRef = useRef<HTMLElement | null>(null);
@@ -69,6 +82,10 @@ const useFooterControl = () => {
   const location = useLocation();
   const [isScrollable, setIsScrollable] = useState(false);
 
+  // Determine if the current screen is mobile
+  const isMobile = window.innerWidth < 768;
+
+  // Checks scroll position and determines footer visibility
   const updateVisibility = () => {
     const { scrollHeight, clientHeight } = document.documentElement;
     setIsScrollable(scrollHeight > clientHeight);
@@ -78,11 +95,17 @@ const useFooterControl = () => {
 
     if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
 
-    scrollTimeout.current = setTimeout(() => {
+    // On mobile: show immediately without delay
+    if (isMobile) {
       setVisible(nearBottom);
-    }, 150);
+    } else {
+      scrollTimeout.current = setTimeout(() => {
+        setVisible(nearBottom);
+      }, 150);
+    }
   };
 
+  // Setup scroll/resize listeners
   useEffect(() => {
     updateVisibility();
     window.addEventListener("scroll", updateVisibility);
@@ -95,6 +118,7 @@ const useFooterControl = () => {
     };
   }, []);
 
+  // Re-run visibility check on route change
   useEffect(() => {
     setTimeout(updateVisibility, 200);
   }, [location]);
@@ -102,6 +126,10 @@ const useFooterControl = () => {
   return { visible, footerRef, isScrollable };
 };
 
+/**
+ * Footer component with animated underline, social icons,
+ * and scroll-based visibility
+ */
 const Footer: React.FC = () => {
   const { activeLink, setActiveLink } = useActiveLink();
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
@@ -117,11 +145,15 @@ const Footer: React.FC = () => {
       } w-full ${visible ? "opacity-100" : "opacity-0 pointer-events-none"}`}
       style={{ background: "#1E1E1E" }}
     >
+      {/* Main footer row */}
       <div className="flex flex-col md:flex-row items-center md:justify-between px-6 md:px-10 py-4 space-y-6 md:space-y-0">
+        
+        {/* Logo (visible only on medium screens and up) */}
         <div className="hidden md:flex md:w-1/5 justify-center md:justify-start">
           <img src={logo} alt="Logo" className="h-12 w-auto" />
         </div>
 
+        {/* Navigation links with animated underline */}
         <nav className="md:w-3/5 w-full flex justify-evenly items-center">
           <ul className="flex space-x-10 relative w-full justify-evenly" onMouseLeave={() => setHoveredLink(null)}>
             {links.map((link, index) => (
@@ -143,18 +175,44 @@ const Footer: React.FC = () => {
               </li>
             ))}
             {!hidden && (
-              <span className="absolute bottom-0 bg-[#00FF00] h-[2px] transition-all duration-300" style={{ left, width }} />
+              <span
+                className="absolute bottom-0 bg-[#00FF00] h-[2px] transition-all duration-300"
+                style={{ left, width }}
+              />
             )}
           </ul>
         </nav>
 
+        {/* Social icons */}
         <div className="md:w-1/5 flex justify-center md:justify-end space-x-5 text-xl mt-4 md:mt-0">
-          <a href="https://www.linkedin.com/in/jamie-b-campbell/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#00FF00] w-6 h-6"><FaLinkedin /></a>
-          <a href="https://github.com/Jamb0Camb0123" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#00FF00] w-6 h-6"><FaGithub /></a>
-          <a href="https://leetcode.com/u/JamboCambo123/" target="_blank" rel="noopener noreferrer" className="fill-white hover:fill-[#00FF00] w-5 h-5"><LeetCodeIcon /></a>
+          <a
+            href="https://www.linkedin.com/in/jamie-b-campbell/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white hover:text-[#00FF00] w-6 h-6"
+          >
+            <FaLinkedin />
+          </a>
+          <a
+            href="https://github.com/Jamb0Camb0123"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white hover:text-[#00FF00] w-6 h-6"
+          >
+            <FaGithub />
+          </a>
+          <a
+            href="https://leetcode.com/u/JamboCambo123/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="fill-white hover:fill-[#00FF00] w-5 h-5"
+          >
+            <LeetCodeIcon />
+          </a>
         </div>
       </div>
 
+      {/* Bottom bar with copyright and policy links */}
       <div className="border-t border-gray-600 text-sm py-2 flex flex-col md:flex-row justify-between items-center px-6 md:px-10 space-y-4 md:space-y-0">
         <div>© {new Date().getFullYear()} Jamie Campbell Portfolio Site.</div>
         <div className="flex space-x-4">
