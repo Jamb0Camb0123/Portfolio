@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 
 const links = [
@@ -9,64 +9,66 @@ const links = [
 ];
 
 const Header: React.FC = () => {
-  const [activeLink, setActiveLink] = useState('/home'); // Track active link
-  const [hoveredLink, setHoveredLink] = useState<string | null>(null); // Track hovered link
-  const navRef = useRef<HTMLUListElement>(null); // Reference to the nav container
-  const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]); // Refs for each link
+  const [activeLink, setActiveLink] = useState('/home');
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+  const navRef = useRef<HTMLUListElement>(null);
+  const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
 
   const location = useLocation();
 
   useEffect(() => {
-    setActiveLink(location.pathname); // Update active link when the route changes
+    setActiveLink(location.pathname);
   }, [location]);
 
-  const getLinkPosition = (index: number) => {
-    const linkElement = linkRefs.current[index];
-    if (linkElement) {
-      const { offsetLeft, offsetWidth } = linkElement;
-      return { left: offsetLeft, width: offsetWidth };
+  // State to store underline position
+  const [underlinePos, setUnderlinePos] = useState({ left: 0, width: 0 });
+
+  const updateUnderline = () => {
+    const current = hoveredLink || activeLink;
+    const index = links.findIndex(link => link.to === current);
+    const linkEl = linkRefs.current[index];
+    if (linkEl) {
+      setUnderlinePos({ left: linkEl.offsetLeft, width: linkEl.offsetWidth });
+    } else {
+      setUnderlinePos({ left: 0, width: 0 });
     }
-    return { left: 0, width: 0 };
   };
 
-  const currentLink = hoveredLink || activeLink;
-  const linkIndex = links.findIndex((link) => link.to === currentLink);
-  const { left, width } = getLinkPosition(linkIndex);
+  // Run layout effect after render and refs are attached
+  useLayoutEffect(() => {
+    updateUnderline();
+  }, [activeLink, hoveredLink]);
 
-  // Function to determine the link class
-  const getLinkClass = (link: { to: string }) => {
-    const isActive = link.to === activeLink;
-    return `${isActive ? 'text-green-400' : 'text-white'} pb-1 transition-all duration-300`;
-  };
+  // Also update on window resize to keep underline aligned
+  useEffect(() => {
+    window.addEventListener('resize', updateUnderline);
+    return () => window.removeEventListener('resize', updateUnderline);
+  }, [activeLink, hoveredLink]);
 
   return (
-    <header className="bg-[#1E1E1E] text-white shadow-lg font-Consolas">
-      <nav className="ml-10 mr-10 px-4 py-4">
+    <header className="bg-[#1e1e1e] text-white shadow-lg font-Consolas">
+      <nav className="mx-auto px-10 py-4 max-w-screen-xl">
         <ul
           ref={navRef}
-          className="flex justify-start space-x-10 relative"
-          onMouseLeave={() => setHoveredLink(null)} // Reset hover state when mouse leaves
+          className="flex justify-between w-full relative"
+          onMouseLeave={() => setHoveredLink(null)}
         >
           {links.map((link, index) => (
-            <li key={link.to}>
+            <li key={link.to} className="flex-1 text-center">
               <NavLink
                 to={link.to}
-                ref={(el) => { linkRefs.current[index] = el; }} // Save ref for each link
-                className={getLinkClass(link)} // Apply dynamic classes based on hover or active
-                onMouseEnter={() => setHoveredLink(link.to)} // Set hovered link
-                onClick={() => setActiveLink(link.to)} // Update active link when clicked
+                ref={(el) => { linkRefs.current[index] = el; }}
+                className={`${link.to === activeLink ? 'text-green-400' : 'text-white'} pb-1 transition-all duration-300`}
+                onMouseEnter={() => setHoveredLink(link.to)}
+                onClick={() => setActiveLink(link.to)}
               >
                 {link.label}
               </NavLink>
             </li>
           ))}
-          {/* Underline that moves based on hover or active */}
           <span
-            className="absolute bottom-0 left-0 bg-green-400 h-[2px] transition-all duration-300"
-            style={{
-              left: `${left}px`,
-              width: `${width}px`,
-            }}
+            className="absolute bottom-0 bg-green-400 h-[2px] transition-all duration-300"
+            style={{ left: underlinePos.left, width: underlinePos.width }}
           />
         </ul>
       </nav>

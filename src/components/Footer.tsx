@@ -4,7 +4,6 @@ import { FaLinkedin, FaGithub } from "react-icons/fa";
 import LeetCodeIcon from "../assets/leetcode-icon";
 import logo from "../assets/favicon-transparent.png";
 
-// Navigation links shown in the main footer nav bar
 const links = [
   { to: "/home", label: "Home" },
   { to: "/about", label: "About" },
@@ -12,13 +11,11 @@ const links = [
   { to: "/contact", label: "Contact" },
 ];
 
-// Footer links shown at the very bottom of the footer
 const footerLinks = [
   { to: "/privacy-policy", label: "Privacy Policy" },
   { to: "/terms-of-service", label: "Terms of Service" },
 ];
 
-/** Tracks the current route and returns it as `activeLink` */
 const useActiveLink = () => {
   const location = useLocation();
   const [activeLink, setActiveLink] = useState(location.pathname);
@@ -30,10 +27,6 @@ const useActiveLink = () => {
   return { activeLink, setActiveLink };
 };
 
-/**
- * Computes the underline position for the active or hovered link
- * and hides it for footer links unless hovered
- */
 const useUnderlinePosition = (
   activeLink: string,
   hoveredLink: string | null,
@@ -43,20 +36,18 @@ const useUnderlinePosition = (
   const [hidden, setHidden] = useState(false);
 
   const updateUnderline = useCallback(() => {
-    const isFooterLink = ["/privacy-policy", "/terms-of-service"].includes(activeLink);
-    
-    // Hide underline for footer links unless hovered
-    if (isFooterLink && !hoveredLink) {
+    const navPaths = links.map((l) => l.to);
+    const targetLink = hoveredLink || activeLink;
+
+    if (!navPaths.includes(targetLink)) {
       setHidden(true);
       return;
     }
 
     setHidden(false);
-    const targetLink = hoveredLink || activeLink;
     const linkIndex = links.findIndex((l) => l.to === targetLink);
     const linkElement = linkRefs.current?.[linkIndex];
 
-    // Update underline position
     if (linkElement) {
       setPosition({ left: linkElement.offsetLeft, width: linkElement.offsetWidth });
     }
@@ -71,91 +62,80 @@ const useUnderlinePosition = (
   return { position, hidden };
 };
 
-/**
- * Controls whether the footer is visible based on scroll position,
- * and disables animation delay on mobile
- */
 const useFooterControl = () => {
   const [visible, setVisible] = useState(false);
   const footerRef = useRef<HTMLElement | null>(null);
-  const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
-  const location = useLocation();
   const [isScrollable, setIsScrollable] = useState(false);
 
-  // Determine if the current screen is mobile
-  const isMobile = window.innerWidth < 768;
+  useEffect(() => {
+    const footer = footerRef.current;
+    if (!footer) return;
 
-  // Checks scroll position and determines footer visibility
-  const updateVisibility = () => {
-    const { scrollHeight, clientHeight } = document.documentElement;
-    setIsScrollable(scrollHeight > clientHeight);
+    // Detect if page is scrollable
+    setIsScrollable(document.documentElement.scrollHeight > window.innerHeight);
 
-    const { scrollTop } = document.documentElement;
-    const nearBottom = scrollTop + clientHeight >= scrollHeight - 20;
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setVisible(true);
+            } else {
+              setVisible(false);
+            }
+          });
+        },
+        {
+          root: null,
+          rootMargin: "0px",
+          threshold: 0,
+        }
+      );
 
-    if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+      observer.observe(footer);
 
-    // On mobile: show immediately without delay
-    if (isMobile) {
-      setVisible(nearBottom);
+      return () => observer.disconnect();
     } else {
-      scrollTimeout.current = setTimeout(() => {
-        setVisible(nearBottom);
-      }, 150);
+      // Fallback to always visible
+      setVisible(true);
     }
-  };
-
-  // Setup scroll/resize listeners
-  useEffect(() => {
-    updateVisibility();
-    window.addEventListener("scroll", updateVisibility);
-    window.addEventListener("resize", updateVisibility);
-
-    return () => {
-      window.removeEventListener("scroll", updateVisibility);
-      window.removeEventListener("resize", updateVisibility);
-      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-    };
-  }, []);
-
-  // Re-run visibility check on route change
-  useEffect(() => {
-    setTimeout(updateVisibility, 200);
-  }, [location]);
+  }, [footerRef]);
 
   return { visible, footerRef, isScrollable };
 };
 
-/**
- * Footer component with animated underline, social icons,
- * and scroll-based visibility
- */
 const Footer: React.FC = () => {
   const { activeLink, setActiveLink } = useActiveLink();
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
-  const { position: { left, width }, hidden } = useUnderlinePosition(activeLink, hoveredLink, linkRefs);
+  const {
+    position: { left, width },
+    hidden,
+  } = useUnderlinePosition(activeLink, hoveredLink, linkRefs);
   const { visible, footerRef, isScrollable } = useFooterControl();
 
   return (
     <footer
       ref={footerRef}
-      className={`text-white shadow-lg transition-opacity duration-500 ${
+      className={`text-white shadow-lg transition-opacity duration-700 ease-in-out ${
         isScrollable ? "relative" : "fixed bottom-0 left-0"
-      } w-full ${visible ? "opacity-100" : "opacity-0 pointer-events-none"}`}
-      style={{ background: "#1E1E1E" }}
+      } w-full`}
+      style={{
+        background: "#1e1e1e",
+        opacity: visible ? 1 : 0,
+        pointerEvents: visible ? "auto" : "none",
+      }}
     >
-      {/* Main footer row */}
       <div className="flex flex-col md:flex-row items-center md:justify-between px-6 md:px-10 py-4 space-y-6 md:space-y-0">
-        
-        {/* Logo (visible only on medium screens and up) */}
         <div className="hidden md:flex md:w-1/5 justify-center md:justify-start">
           <img src={logo} alt="Logo" className="h-12 w-auto" />
         </div>
 
-        {/* Navigation links with animated underline */}
         <nav className="md:w-3/5 w-full flex justify-evenly items-center">
-          <ul className="flex space-x-10 relative w-full justify-evenly" onMouseLeave={() => setHoveredLink(null)}>
+          <ul
+            className="flex space-x-10 relative w-full justify-evenly"
+            onMouseLeave={() => setHoveredLink(null)}
+          >
             {links.map((link, index) => (
               <li key={link.to} className="m-0">
                 <NavLink
@@ -164,11 +144,16 @@ const Footer: React.FC = () => {
                     linkRefs.current[index] = el;
                   }}
                   className={`pb-1 text-lg transition-all duration-300 ${
-                    link.to === activeLink || link.to === hoveredLink ? "text-[#00FF00]" : "text-white"
+                    link.to === activeLink || link.to === hoveredLink
+                      ? "text-[#00FF00]"
+                      : "text-white"
                   }`}
                   onMouseEnter={() => setHoveredLink(link.to)}
                   onMouseLeave={() => setHoveredLink(null)}
-                  onClick={() => setActiveLink(link.to)}
+                  onClick={() => {
+                    setActiveLink(link.to);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
                 >
                   {link.label}
                 </NavLink>
@@ -183,7 +168,6 @@ const Footer: React.FC = () => {
           </ul>
         </nav>
 
-        {/* Social icons */}
         <div className="md:w-1/5 flex justify-center md:justify-end space-x-5 text-xl mt-4 md:mt-0">
           <a
             href="https://www.linkedin.com/in/jamie-b-campbell/"
@@ -212,12 +196,18 @@ const Footer: React.FC = () => {
         </div>
       </div>
 
-      {/* Bottom bar with copyright and policy links */}
       <div className="border-t border-gray-600 text-sm py-2 flex flex-col md:flex-row justify-between items-center px-6 md:px-10 space-y-4 md:space-y-0">
         <div>© {new Date().getFullYear()} Jamie Campbell Portfolio Site.</div>
         <div className="flex space-x-4">
           {footerLinks.map((link) => (
-            <NavLink key={link.to} to={link.to} className="text-white hover:text-[#00FF00]">
+            <NavLink
+              key={link.to}
+              to={link.to}
+              className="text-white hover:text-[#00FF00]"
+              onClick={() => {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+            >
               {link.label}
             </NavLink>
           ))}
