@@ -6,10 +6,14 @@ const Home: React.FC = () => {
   return (
     <main
       style={{
-        background: 'linear-gradient(135deg, #202124, #2a2c30, #202124)',
+        background: `linear-gradient(
+          135deg,
+          #2e3033 0%,    /* dark gray with just a touch of light */
+          #1f2124 70%,   /* darker mid-tone */
+          #141618 100%   /* near black */
+        )`,
       }}
-      className="text-[#d4d4d4] min-h-screen flex flex-col justify-center items-center px-4 py-16 text-center"
-    >
+      className="text-[#d4d4d4] min-h-screen flex flex-col justify-center items-center px-4 py-16 text-center">
       {/* Hero Section with image to the left */}
       <section className="flex-grow flex items-center max-w-3xl w-full mb-16 space-x-8">
         {/* Image with green circular border */}
@@ -60,18 +64,24 @@ const Home: React.FC = () => {
       </div>
 
       {/* Highlighted Skills */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-5xl w-full pb-16">
+      <section className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-5xl w-full pb-16">
         <div className="bg-[#252526] shadow-lg rounded-xl p-6 border border-[#2d2d30]">
           <h3 className="text-xl font-semibold mb-2 text-[#569cd6]">Frontend</h3>
           <p>React, Tailwind, TypeScript, HTML5, CSS3</p>
         </div>
         <div className="bg-[#252526] shadow-lg rounded-xl p-6 border border-[#2d2d30]">
           <h3 className="text-xl font-semibold mb-2 text-[#c586c0]">Backend</h3>
-          <p>Node.js, C#, .Net, Java, SQL, APIs</p>
+          <p>Node.js, C++, C#, .Net, Java, SQL, Rest APIs</p>
         </div>
         <div className="bg-[#252526] shadow-lg rounded-xl p-6 border border-[#2d2d30]">
           <h3 className="text-xl font-semibold mb-2 text-[#d7ba7d]">Tools</h3>
           <p>GitHub, VS Code, IntelliJ</p>
+        </div>
+        <div className="bg-[#252526] shadow-lg rounded-xl p-6 border border-[#2d2d30]">
+          <h3 className="text-xl font-semibold mb-2 text-[#9cdcfe]">IT</h3>
+          <p>
+            Power Platform, SharePoint, Microsoft 365, Exchange, Technical Support
+          </p>
         </div>
       </section>
     </main>

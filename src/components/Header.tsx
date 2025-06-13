@@ -47,7 +47,7 @@ const Header: React.FC = () => {
 
   return (
     <header className="bg-[#1e1e1e] text-white shadow-lg font-Consolas">
-      <nav className="mx-auto px-10 py-4 max-w-screen-xl">
+      <nav className="mx-auto px-10 py-6 max-w-screen-xl">
         <ul
           ref={navRef}
           className="flex justify-between w-full relative"
