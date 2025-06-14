@@ -13,7 +13,7 @@ export default defineConfig(({ command}) => {
   } else {
     // build
     return {
-      plugins: [react()],
+      plugins: [react(),tailwindcss()],
       base: '/portfolio/',  // production base path
     }
   }

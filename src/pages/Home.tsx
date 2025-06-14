@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';  // <-- Add this import
 import MeImage from '../assets/me.jpg';
 
 const Home: React.FC = () => {
@@ -37,27 +36,11 @@ const Home: React.FC = () => {
 
       {/* Call to Action Buttons */}
       <div className="flex flex-wrap gap-4 justify-center mb-16">
-        <Link
-          to="/projects"
-          className="px-6 py-3 border border-green-300 text-green-300 rounded-lg
-                     hover:bg-green-400 hover:text-black hover:border-green-400 font-semibold transition"
-        >
-          View Projects
-        </Link>
-
-        <Link
-          to="/contact"
-          className="px-6 py-3 border border-green-300 text-green-300 rounded-lg
-                     hover:bg-green-400 hover:text-black hover:border-green-400 font-semibold transition"
-        >
-          Contact Me
-        </Link>
-
         <a
           href="/portfolio/Jamie_Campbell_CV.pdf"
           target="_blank"
           rel="noopener noreferrer"
-          className="px-6 py-3 border border-green-300 text-green-300 rounded-lg hover:bg-green-400 hover:text-black hover:border-green-400 font-semibold transition"
+          className="px-10 py-3 border border-green-300 text-green-300 rounded-lg hover:bg-green-400 hover:text-black hover:border-green-400 font-semibold transition"
         >
           See My Resume
         </a>
@@ -75,7 +58,7 @@ const Home: React.FC = () => {
         </div>
         <div className="bg-[#252526] shadow-lg rounded-xl p-6 border border-[#2d2d30]">
           <h3 className="text-xl font-semibold mb-2 text-[#d7ba7d]">Tools</h3>
-          <p>GitHub, VS Code, IntelliJ</p>
+          <p>GitHub, VS Code, IntelliJ, Powershell</p>
         </div>
         <div className="bg-[#252526] shadow-lg rounded-xl p-6 border border-[#2d2d30]">
           <h3 className="text-xl font-semibold mb-2 text-[#9cdcfe]">IT</h3>
