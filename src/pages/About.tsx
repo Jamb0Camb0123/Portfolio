@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import backgroundImage from '../assets/background.png';
 
 const About: React.FC = () => {
   const [openBoxes, setOpenBoxes] = useState({
@@ -17,14 +16,17 @@ const About: React.FC = () => {
   return (
     <div
       style={{
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        minHeight: '100vh',
-        width: '100%',
-        position: 'relative',
-      }}
+  background: `linear-gradient(
+    135deg,
+    #2e3033 0%,
+    #1f2124 70%,
+    #141618 100%
+  )`,
+  minHeight: '100vh',
+  width: '100%',
+  position: 'relative',
+}}
+
     >
       <div
         style={{
@@ -43,7 +45,7 @@ const About: React.FC = () => {
         {/* Who am I? section */}
         <section className="max-w-8xl w-full mb-12">
           <h1 className="text-4xl md:text-6xl font-bold text-center mb-6 text-green-500">
-            Who am I?
+            About Me
           </h1>
           <div className="max-w-5xl mx-auto text-center space-y-6 px-4 md:px-0">
             <p className="text-lg md:text-xl leading-relaxed">
