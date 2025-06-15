@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { FaLinkedin, FaGithub } from "react-icons/fa";
+import { FaLinkedin, FaGithub, FaFileAlt } from "react-icons/fa";
 import LeetCodeIcon from "../assets/leetcode-icon";
 import logo from "../assets/favicon-transparent.png";
 
@@ -168,12 +168,25 @@ const Footer: React.FC = () => {
           </ul>
         </nav>
 
-        <div className="md:w-1/5 flex justify-center md:justify-end space-x-5 text-xl mt-4 md:mt-0">
+          <div className="md:w-1/5 flex justify-center md:justify-end space-x-5 text-xl mt-4 md:mt-0">
+          {/* CV icon moved to leftmost */}
+          <a
+            href="/portfolio/Jamie_Campbell_CV.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white hover:text-[#00FF00] w-6 h-6 flex items-center justify-center"
+            aria-label="Resume"
+            title="View Resume"
+          >
+            <FaFileAlt />
+          </a>
+
           <a
             href="https://www.linkedin.com/in/jamie-b-campbell/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white hover:text-[#00FF00] w-6 h-6"
+            className="text-white hover:text-[#00FF00] w-6 h-6 flex items-center justify-center"
+            aria-label="LinkedIn"
           >
             <FaLinkedin />
           </a>
@@ -181,7 +194,8 @@ const Footer: React.FC = () => {
             href="https://github.com/Jamb0Camb0123"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white hover:text-[#00FF00] w-6 h-6"
+            className="text-white hover:text-[#00FF00] w-6 h-6 flex items-center justify-center"
+            aria-label="GitHub"
           >
             <FaGithub />
           </a>
@@ -189,11 +203,13 @@ const Footer: React.FC = () => {
             href="https://leetcode.com/u/JamboCambo123/"
             target="_blank"
             rel="noopener noreferrer"
-            className="fill-white hover:fill-[#00FF00] w-5 h-5"
+            className="text-white hover:text-[#00FF00] w-6 h-6 flex items-center justify-center"
+            aria-label="LeetCode"
           >
-            <LeetCodeIcon />
+            <LeetCodeIcon style={{ width: 20, height: 20 }} />
           </a>
         </div>
+
       </div>
 
       <div className="border-t border-gray-600 text-sm py-2 flex flex-col md:flex-row justify-between items-center px-6 md:px-10 space-y-4 md:space-y-0">

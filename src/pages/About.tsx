@@ -44,7 +44,7 @@ const About: React.FC = () => {
       >
         {/* Who am I? section */}
         <section className="max-w-8xl w-full mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold text-center mb-6 text-green-500">
+          <h1 className="text-4xl md:text-6xl text-center mb-6 text-green-500">
             About Me
           </h1>
           <div className="max-w-5xl mx-auto text-center space-y-6 px-4 md:px-0">
@@ -232,7 +232,7 @@ const About: React.FC = () => {
           {/* 4. Bottom row: Key Skills and Additional Information side by side, independent heights */}
           <div className="flex flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0 mt-6 items-start">
 {/* Key Skills box */}
-<div className="flex-1 bg-[#252526] shadow-lg rounded-xl border border-[#2d2d30] flex flex-col">
+<div className="flex-1 w-full md:w-auto bg-[#252526] shadow-lg rounded-xl border border-[#2d2d30] flex flex-col">
   <button
     onClick={() => toggleBox('skills')}
     className="w-full flex justify-between items-center p-6 cursor-pointer focus:outline-none"
@@ -264,7 +264,8 @@ const About: React.FC = () => {
 </div>
 
 {/* Additional Information box */}
-<div className="flex-1 bg-[#252526] shadow-lg rounded-xl border border-[#2d2d30] flex flex-col">
+<div className="flex-1 w-full md:w-auto bg-[#252526] shadow-lg rounded-xl border border-[#2d2d30] flex flex-col">
+
   <button
     onClick={() => toggleBox('additional')}
     className="w-full flex justify-between items-center p-6 cursor-pointer focus:outline-none"

@@ -1,7 +1,14 @@
-import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import { useEffect } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Popup from "./components/Popup"; // import the popup component
 import Home from "./pages/Home";
 import Projects from "./pages/Projects";
 import About from "./pages/About";
@@ -17,7 +24,7 @@ const routeTitles: { [key: string]: string } = {
   "/projects": "Projects",
   "/contact": "Contact",
   "/privacy-policy": "Privacy Policy",
-  "/terms-of-service": "Terms of Service"
+  "/terms-of-service": "Terms of Service",
 };
 
 // Hook to update the page title dynamically
@@ -25,7 +32,7 @@ function usePageTitle() {
   const location = useLocation();
 
   useEffect(() => {
-    const title = routeTitles[location.pathname] || "404 - Page Not Found"; // Use fallback title
+    const title = routeTitles[location.pathname] || "404 - Page Not Found"; // Fallback title
     document.title = title;
   }, [location]);
 }
@@ -42,7 +49,7 @@ function App() {
 // Separate component to use `useLocation()` inside Router
 function MainContent() {
   const location = useLocation();
-  const isNotFound = !routeTitles[location.pathname]; // If route is not in `routeTitles`, it's a 404
+  const isNotFound = !routeTitles[location.pathname]; // If route not in titles, 404
 
   return (
     <div>
@@ -57,10 +64,12 @@ function MainContent() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/privacy-policy" element={<Privacy />} />
         <Route path="/terms-of-service" element={<Terms />} />
-        <Route path="*" element={<NotFound />} /> {/* 404 Page */}
+        <Route path="*" element={<NotFound />} /> {/* 404 page */}
       </Routes>
 
-      {!isNotFound && <Footer />} {/* Same check for Footer */}
+      {!isNotFound && <Footer />}
+
+      <Popup /> {/* Popup always rendered */}
     </div>
   );
 }
