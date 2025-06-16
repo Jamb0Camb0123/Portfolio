@@ -1,20 +1,41 @@
 import React, { useEffect, useState } from "react";
 
-const GITHUB_USERNAME = "Jamb0Camb0123"; // Replace with your GitHub username
+const GITHUB_USERNAME = "Jamb0Camb0123";
 
 const Projects: React.FC = () => {
   const [repos, setRepos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated`)
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchRepos = async () => {
+      try {
+        const token = import.meta.env.VITE_GITHUB_TOKEN;
+
+        const response = await fetch(
+          `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated`,
+          {
+            headers: {
+              Authorization: `token ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`GitHub API error: ${response.status}`);
+        }
+
+        const data = await response.json();
         const filtered = data.filter((repo: any) => !repo.fork);
         setRepos(filtered);
+      } catch (err: any) {
+        setError(err.message || "Failed to load repositories.");
+      } finally {
         setLoading(false);
-      })
-      .catch(() => setLoading(false));
+      }
+    };
+
+    fetchRepos();
   }, []);
 
   return (
@@ -38,6 +59,8 @@ const Projects: React.FC = () => {
 
       {loading ? (
         <p className="text-center text-green-400 text-lg md:text-xl">Loading projects...</p>
+      ) : error ? (
+        <p className="text-center text-red-400 text-lg md:text-xl">{error}</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
           {repos.map((repo) => (
@@ -58,7 +81,7 @@ const Projects: React.FC = () => {
                   : "No description"}
               </p>
               <div className="mt-4 text-sm text-green-400 font-medium">
-                ⭐ {repo.stargazers_count} | 🍴 {repo.forks_count}
+                ⭐ {repo.stargazers_count}
               </div>
             </a>
           ))}
