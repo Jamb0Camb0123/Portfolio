@@ -8,13 +8,13 @@ export default defineConfig(({ command}) => {
     // dev server
     return {
       plugins: [react(),tailwindcss()],
-      base: '/Portfolio/',  // dev server runs at root
+      base: '/portfolio/',  // dev server runs at root
     }
   } else {
     // build
     return {
       plugins: [react(),tailwindcss()],
-      base: '/Portfolio/',  // production base path
+      base: '/portfolio/',  // production base path
     }
   }
 })
