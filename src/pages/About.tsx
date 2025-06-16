@@ -44,14 +44,14 @@ const About: React.FC = () => {
       >
         {/* Who am I? section */}
         <section className="max-w-8xl w-full mb-12">
-          <h1 className="text-4xl md:text-6xl text-center mb-6 text-green-500">
+          <h1 className="text-4xl md:text-6xl text-center mb-6">
             About Me
           </h1>
           <div className="max-w-5xl mx-auto text-center space-y-6 px-4 md:px-0">
-            <p className="text-lg md:text-xl leading-relaxed">
+            <p className="text-lg md:text-xl leading-relaxed text-green-500">
               I'm Jamie, a results-driven Computer Science graduate with a First-Class degree and hands-on experience in software development, IT support, and web technologies. I’m passionate about solving real-world problems with clean, effective code and user-focused solutions.
             </p>
-            <p className="text-lg md:text-xl leading-relaxed">
+            <p className="text-lg md:text-xl leading-relaxed text-green-500">
               My experience spans developing Power Platform apps, automating business processes, building SQL procedures, and supporting hybrid infrastructure environments.
             </p>
           </div>

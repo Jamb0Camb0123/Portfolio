@@ -39,7 +39,7 @@ function usePageTitle() {
 
 function App() {
   return (
-    <Router basename="/portfolio">
+    <Router basename="/Portfolio">
       <PageTitleUpdater />
       <MainContent />
     </Router>

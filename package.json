@@ -1,9 +1,9 @@
 {
-  "name": "portfolio",
+  "name": "Portfolio",
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://Jamb0Camb0123.github.io/portfolio",
+  "homepage": "https://Jamb0Camb0123.github.io/Portfolio",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

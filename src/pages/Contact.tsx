@@ -88,10 +88,10 @@ const Contact: React.FC = () => {
       >
         {/* Left text */}
         <section className="w-full md:w-5/12 flex flex-col justify-center items-center text-center mb-12 md:mb-0">
-          <h1 className="text-4xl md:text-6xl mb-6 text-green-500">
+          <h1 className="text-4xl md:text-6xl mb-6">
             Get in Touch
           </h1>
-          <p className="text-lg md:text-xl leading-relaxed max-w-md">
+          <p className="text-lg md:text-xl leading-relaxed max-w-md text-green-500">
             Have something you want to speak to me about, fill out the form below and I'll get back to you ASAP.
           </p>
         </section>
